@@ -1,9 +1,0 @@
-dependencies:
-- name: minio
-  version: 7.0.2
-  repository: https://helm.min.io/
-  condition: minio.enabled
-- name: any-resource
-  version: 0.1.0
-  repository: https://kiwigrid.github.io/
-  condition: any-resource.enabled

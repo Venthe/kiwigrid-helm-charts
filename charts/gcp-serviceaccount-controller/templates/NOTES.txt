@@ -1,8 +1,0 @@
-{{- if and (eq "" .Values.gcpCredentials) (not .Values.existingSecret)}}
-No Service Account key or existing secret defined for this release. Please provide either a base64 encoded service account key or an existing secret containing one.
-Bash:
-  $ gcloud iam service-accounts keys create ~/key.json --iam-account SA-NAME@PROJECT-ID.iam.gserviceaccount.com
-  $ base64 ~/key.json | tr -d '\n'
-{{- else}}
-{{ .Chart.Name }} successfully installed as {{ .Release.Name }} in {{ .Release.Namespace }}
-{{- end}}

@@ -1,1 +1,0 @@
-Your Zipkin proxy is now running and can collect traces from your apps

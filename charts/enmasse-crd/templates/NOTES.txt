@@ -1,1 +1,0 @@
-Enmasse CRD's successful installed

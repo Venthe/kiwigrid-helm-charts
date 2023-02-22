@@ -1,3 +1,0 @@
-keycloak-controller installed.
-
-For usage instructions, visit: https://github.com/kiwigrid/keycloak-controller
