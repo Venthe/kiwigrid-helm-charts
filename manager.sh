@@ -40,6 +40,10 @@ function release_local() {
       ./charts/fluentd-opensearch
 }
 
+function template() {
+    helm template --values=./test/values.yml ./charts/fluentd-opensearch/
+}
+
 function logs() {
     kubectl logs --namespace infrastructure ds/fluentd-infrastructure-fluentd-opensearch --follow
 }
