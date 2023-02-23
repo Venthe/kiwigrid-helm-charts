@@ -298,7 +298,7 @@ fluentd:
     host: ~
     hosts: []
     # FLUENT_OPENSEARCH_INDEX_NAME: 'fluentd'
-    indexName: fluentd.${tag}.%Y%m%d
+    indexName: fluentd.%Y%m%d
     # If you are configuring an AWS signing sidecar, scheme should be "http"
     log400Reason: false
     logLevel: info

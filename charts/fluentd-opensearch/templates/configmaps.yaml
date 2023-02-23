@@ -287,7 +287,7 @@ data:
       @id in_tail_container_logs
       path {{ .Values.fluentd.containers.path | quote}}
       pos_file /var/log/fluentd-containers.log.pos
-      tag raw.{{ .Values.fluentd.containers.tag | quote}}
+      tag raw.{{ .Values.fluentd.containers.tag }}
       exclude_path {{ .Values.fluentd.containers.excludePath | quote}}
       read_from_head true
       @include ../tail_container_parse.conf
