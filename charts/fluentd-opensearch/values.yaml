@@ -253,7 +253,6 @@ fluentd:
   containers:
     excludePath: use_default
     parserTimeFormat: '%Y-%m-%dT%H:%M:%S.%NZ'
-    parserType: json
     path: /var/log/containers/*.log
     tag: kubernetes.*
   kubernetes:
@@ -299,7 +298,7 @@ fluentd:
     host: ~
     hosts: []
     # FLUENT_OPENSEARCH_INDEX_NAME: 'fluentd'
-    indexName: fluentd
+    indexName: fluentd.${tag}.%Y%m%d
     # If you are configuring an AWS signing sidecar, scheme should be "http"
     log400Reason: false
     logLevel: info
