@@ -1,0 +1,19 @@
+{{- if .Values.rbac.create -}}
+kind: ClusterRole
+apiVersion: rbac.authorization.k8s.io/v1
+metadata:
+  name: {{ include "fluentd-opensearch.fullname" . }}
+  labels:
+    {{- include "fluentd-opensearch.labels" . | nindent 4 }}
+    addonmanager.kubernetes.io/mode: Reconcile
+rules:
+- apiGroups:
+  - ""
+  resources:
+  - "namespaces"
+  - "pods"
+  verbs:
+  - "get"
+  - "watch"
+  - "list"
+{{- end -}}

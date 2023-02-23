@@ -1,0 +1,173 @@
+apiVersion: apps/v1
+kind: DaemonSet
+metadata:
+  name: {{ include "fluentd-opensearch.fullname" . }}
+  labels:
+    {{- include "fluentd-opensearch.labels" . | nindent 4 }}
+    addonmanager.kubernetes.io/mode: Reconcile
+{{- if .Values.annotations }}
+  annotations:
+{{ toYaml .Values.annotations | indent 4 }}
+{{- end }}
+spec:
+  updateStrategy:
+{{ toYaml .Values.updateStrategy | indent 4 }}
+  selector:
+    matchLabels:
+      {{- include "fluentd-opensearch.selectorLabels" . | nindent 6 }}
+  template:
+    metadata:
+      labels:
+        {{- include "fluentd-opensearch.selectorLabels" . | nindent 8 }}
+        {{- with .Values.labels }}
+        {{- toYaml . | nindent 8 }}
+        {{- end }}
+      annotations:
+        checksum/config: {{ include (print $.Template.BasePath "/configmaps.yaml") . | sha256sum }}
+{{- if .Values.podAnnotations }}
+{{ toYaml .Values.podAnnotations | indent 8 }}
+{{- end }}
+    spec:
+      serviceAccountName: {{ include "fluentd-opensearch.fullname" . }}
+      {{- if .Values.priorityClassName }}
+      priorityClassName: {{ .Values.priorityClassName | quote }}
+      {{- end }}
+      {{- if .Values.image.pullSecrets }}
+      imagePullSecrets:
+      {{- range .Values.image.pullSecrets }}
+        - name: {{ . }}
+      {{- end }}
+      {{- end }}
+{{- if .Values.securityContext }}
+      securityContext:
+{{ toYaml .Values.securityContext | indent 8 }}
+{{- end }}
+      containers:
+      - name: {{ include "fluentd-opensearch.fullname" . }}
+        image:  "{{ .Values.image.repository }}:{{ .Values.image.tag | default .Chart.AppVersion }}"
+        imagePullPolicy: {{ .Values.image.pullPolicy | quote }}
+        # command:
+        #   - bash
+        #   - -c
+        #   - sleep infinity
+        env:
+        - name: FLUENTD_CONF
+          value: "fluent.conf"
+        - name: FLUENTD_OPT
+          value: {{ .Values.fluentd.opt | quote }}
+  {{- if .Values.fluentd.opensearch.auth.enabled }}
+  {{- if .Values.fluentd.opensearch.auth.user }}
+        - name: FLUENT_OPENSEARCH_USER
+          value: {{ .Values.fluentd.opensearch.auth.user | quote }}
+  {{- end }}
+  {{- if .Values.fluentd.opensearch.auth.existingSecret.name }}
+        - name: FLUENT_OPENSEARCH_PASSWORD
+          valueFrom:
+            secretKeyRef:
+              name: {{ .Values.fluentd.opensearch.auth.existingSecret.name }}
+              key: {{ .Values.fluentd.opensearch.auth.existingSecret.key }}
+  {{- else if .Values.fluentd.opensearch.auth.password }}
+        - name: FLUENT_OPENSEARCH_PASSWORD
+          value: {{ .Values.fluentd.opensearch.auth.password | quote }}
+  {{- end }}
+  {{- end }}
+        {{- if .Values.env }}
+        {{- range $key, $value := .Values.env }}
+        - name: {{ $key }}
+          value: {{ $value | quote }}
+        {{- end }}
+        {{- end }}
+        {{- if .Values.secret }}
+        {{- range $key, $value := .Values.secret }}
+        - name: {{ .name }}
+          valueFrom:
+            secretKeyRef:
+              name: {{ $value.secret_name }}
+              key: {{ $value.secret_key | quote }}
+        {{- end }}
+        {{- end }}
+        - name: K8S_NODE_NAME
+          valueFrom:
+            fieldRef:
+              apiVersion: v1
+              fieldPath: spec.nodeName
+        resources:
+{{ toYaml .Values.resources | indent 10 }}
+        volumeMounts:
+        - name: var-log
+          mountPath: {{ .Values.hostLogDir.varLog }}
+        - name: container-logs
+          mountPath: {{ .Values.hostLogDir.containers }}
+          readOnly: true
+        - name: lib-systemd-dir
+          mountPath: {{ .Values.hostLogDir.libSystemdDir }}
+          readOnly: true
+        - name: config-volume
+          mountPath: /fluentd/etc
+          readOnly: true
+        - name: config-volume-confd
+          mountPath: /fluentd/etc/conf.d
+          readOnly: true
+        - name: config-volume-kubernetes
+          mountPath: /fluentd/etc/kubernetes
+          readOnly: true
+{{- if .Values.extraVolumeMounts }}
+{{ toYaml .Values.extraVolumeMounts | indent 8 }}
+{{- end }}
+      {{- if .Values.livenessProbe.enabled }}  #pointing to fluentd Dockerfile
+        livenessProbe:
+          initialDelaySeconds: {{ .Values.livenessProbe.initialDelaySeconds }}
+          periodSeconds: {{ .Values.livenessProbe.periodSeconds }}
+{{ toYaml .Values.livenessProbe.kind | indent 10 }}
+{{- end }}
+        ports:
+{{- range $port := .Values.service.ports }}
+          - name: {{ $port.name }}
+            containerPort: {{ $port.port }}
+{{- if $port.protocol }}
+            protocol: {{ $port.protocol }}
+{{- end }}
+{{- end }}
+{{- if .Values.extraContainers }}
+{{ toYaml .Values.extraContainers | indent 6 }}
+{{- end }}
+{{- if .Values.extraInitContainers }}
+      initContainers:
+{{ toYaml .Values.extraInitContainers | indent 6 }}
+{{- end }}
+      terminationGracePeriodSeconds: 30
+      volumes:
+      - name: var-log
+        hostPath:
+          path: {{ .Values.hostLogDir.varLog }}
+      - name: container-logs
+        hostPath:
+          path: {{ .Values.hostLogDir.containers }}
+      # It is needed to copy systemd library to decompress journals
+      - name: lib-systemd-dir
+        hostPath:
+          path: {{ .Values.hostLogDir.libSystemdDir }}
+      - name: config-volume
+        configMap:
+          name: {{ include "fluentd-opensearch.fullname" . }}
+      - name: config-volume-confd
+        configMap:
+          name: {{ include "fluentd-opensearch.fullname" . }}-confd
+      - name: config-volume-kubernetes
+        configMap:
+          name: {{ include "fluentd-opensearch.fullname" . }}-kubernetes
+{{- if .Values.extraVolumes }}
+{{ toYaml .Values.extraVolumes | indent 6 }}
+{{- end }}
+{{- if .Values.affinity }}
+      affinity:
+{{ toYaml .Values.affinity | indent 8 }}
+{{- end }}
+{{- if .Values.nodeSelector }}
+      nodeSelector:
+{{ toYaml .Values.nodeSelector | indent 8 }}
+{{- end }}
+{{- if .Values.tolerations }}
+      tolerations:
+{{ toYaml .Values.tolerations | indent 6 }}
+{{- end }}

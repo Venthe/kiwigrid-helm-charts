@@ -1,0 +1,24 @@
+apiVersion: v2
+name: fluentd-opensearch
+version: 1.0.0
+appVersion: v1.15.3-debian-opensearch-1.1
+type: application
+home: https://github.com/Venthe
+description: A Fluentd Helm chart for Kubernetes with opensearch output
+icon: https://raw.githubusercontent.com/fluent/fluentd-docs/master/public/logo/Fluentd_square.png
+keywords:
+- fluentd
+- opensearch
+- multiline
+- detect-exceptions
+- logging
+sources:
+- https://github.com/kokuwaio/helm-charts/tree/main/charts/fluentd-elasticsearch
+- https://github.com/fluent/fluentd-kubernetes-daemonset
+- https://github.com/GoogleCloudPlatform/fluent-plugin-detect-exceptions
+- https://github.com/fluent/fluentd-kubernetes-daemonset
+maintainers:
+- name: venthe
+  email: jacek.lipiec.bc@gmail.com
+engine: gotpl
+kubeVersion: ">=1.16.0-0"
