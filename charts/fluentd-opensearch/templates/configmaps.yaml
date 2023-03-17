@@ -119,6 +119,9 @@ data:
       <buffer>
 {{- end }}
         @type {{ .Values.fluentd.opensearch.buffer.type | quote }}
+{{- if .Values.fluentd.opensearch.buffer.timeKey }}
+        timekey {{ .Values.fluentd.opensearch.buffer.timeKey }}
+{{- end }}
         path {{ .Values.fluentd.opensearch.buffer.path | quote }}
         retry_type {{ .Values.fluentd.opensearch.buffer.retryType | quote }}
         overflow_action {{ .Values.fluentd.opensearch.buffer.overflowAction | quote }}

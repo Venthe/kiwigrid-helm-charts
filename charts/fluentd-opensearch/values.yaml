@@ -276,7 +276,8 @@ fluentd:
       password: ~
       user: ~
     buffer:
-      chunkKeys: ''
+      chunkKeys: 'tag, time'
+      timeKey: 1m
       chunkLimitSize: 8M
       enabled: true
       flushInterval: 60s
