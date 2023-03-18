@@ -143,6 +143,7 @@ data:
         retry_max_interval {{ .Values.fluentd.opensearch.buffer.retryMaxInterval | quote }}
         retry_timeout {{ .Values.fluentd.opensearch.buffer.retryTimeout | quote }}
         retry_forever {{ .Values.fluentd.opensearch.buffer.retryForever | quote }}
+        retry_wait {{ .Values.fluentd.opensearch.buffer.retryWait | quote }}
       </buffer>
 {{- end }}
       with_transporter_log true

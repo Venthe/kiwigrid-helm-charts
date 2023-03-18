@@ -292,6 +292,7 @@ fluentd:
       retryMaxInterval: '30'
       retryTimeout: 72h
       retryType: exponential_backoff
+      retryWait: 5s
       totalLimitSize: 512M
       type: file
     caFile: ~
