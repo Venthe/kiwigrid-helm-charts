@@ -15,12 +15,24 @@ module Fluent
         if record.key?(@default_key) == false
           record
         else
+          record=split_json(record)
           record=parse_pattern(record)
           record
         end
       end
 
       private
+      def split_json record
+        begin
+          if record[@default_key].chr == "{"
+            dict=JSON.parse(record[@default_key])
+            record=record.merge(dict)
+          end
+        rescue
+        end
+        record
+      end
+
       def parse_pattern record
         pattern_string=record.dig(*steps_from(@regexp_key))
         pattern=Regexp.new("#{pattern_string != nil ? "#{pattern_string}|" : ""}#{@default_pattern}")
