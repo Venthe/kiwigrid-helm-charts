@@ -280,10 +280,9 @@ fluentd:
       user: ~
     buffer:
       chunkKeys: 'tag, time'
-      timeKey: 1m
       chunkLimitSize: 8M
       enabled: true
-      flushInterval: 60s
+      flushInterval: 10s
       flushMode: interval
       flushThreadCount: '1'
       overflowAction: block
@@ -293,6 +292,7 @@ fluentd:
       retryTimeout: 72h
       retryType: exponential_backoff
       retryWait: 5s
+      timeKey: 60s
       totalLimitSize: 512M
       type: file
     caFile: ~
