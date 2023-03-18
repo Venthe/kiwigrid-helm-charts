@@ -46,6 +46,9 @@ configMaps:
     systemd: true
     tail_container_parse: true
     systemConf: true
+    messageTransformer:
+      enabled: false
+      annotationMatch: '[ "^fluentd.*" ]'
     # kubernetesMetadataFilterConfig lets you set arbitrary
     # configuration key-value pairs for the kubernetes_metadata
     # filter. See

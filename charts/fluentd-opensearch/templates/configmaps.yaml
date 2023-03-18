@@ -38,9 +38,19 @@ data:
       skip_container_metadata {{ .Values.fluentd.kubernetes.metadata.skipContainerMetadata | quote}}
       skip_master_url {{ .Values.fluentd.kubernetes.metadata.skipMasterUrl | quote}}
       skip_namespace_metadata {{ .Values.fluentd.kubernetes.metadata.skipNamespaceMetadata | quote}}
+{{- if .Values.configMaps.useDefaults.messageTransformer.enabled }}
+      annotation_match {{ .Values.configMaps.useDefaults.messageTransformer.annotationMatch }}
+{{- end }}
 {{- range $key, $value := .Values.configMaps.useDefaults.kubernetesMetadataFilterConfig }}
       {{ $key }} {{ $value }}
 {{- end }}
+    </filter>
+{{- end }}
+{{- if .Values.configMaps.useDefaults.messageTransformer.enabled }}
+    # Relabel logs
+    <filter kubernetes.**>
+        @id filter_regexp_splitter
+        @type regexp_splitter
     </filter>
 {{- end }}
 

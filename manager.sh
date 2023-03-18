@@ -48,5 +48,15 @@ function logs() {
     kubectl logs --namespace infrastructure ds/fluentd-infrastructure-fluentd-opensearch --follow
 }
 
+function build_custom_image() {
+  docker build \
+    "./fluentd-kubernetes-label-transformer/lib/fluent/plugin" \
+    --file="Dockerfile" \
+    --tag="docker.home.arpa/fluent/fluentd-kubernetes-daemonset:v1.15.3-debian-opensearch-1.1" \
+    --tag="docker.home.arpa/fluent/fluentd-kubernetes-daemonset:latest"
+  docker push "docker.home.arpa/fluent/fluentd-kubernetes-daemonset:v1.15.3-debian-opensearch-1.1"
+  docker push "docker.home.arpa/fluent/fluentd-kubernetes-daemonset:latest"
+}
+
 # bash ./manager.sh deploy fluentd-opensearch
 ${@}
