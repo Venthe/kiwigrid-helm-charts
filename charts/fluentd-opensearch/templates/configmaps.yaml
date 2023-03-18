@@ -132,6 +132,7 @@ data:
 {{- if .Values.fluentd.opensearch.buffer.timeKey }}
         timekey {{ .Values.fluentd.opensearch.buffer.timeKey }}
 {{- end }}
+        # If file only
         path {{ .Values.fluentd.opensearch.buffer.path | quote }}
         retry_type {{ .Values.fluentd.opensearch.buffer.retryType | quote }}
         overflow_action {{ .Values.fluentd.opensearch.buffer.overflowAction | quote }}
@@ -153,11 +154,13 @@ data:
       tag_key {{ .Values.fluentd.opensearch.tagKey.key | quote }}
 {{- end }}
 {{- if .Values.fluentd.opensearch.timeKey.include }}
+      # Not used. Why?
       include_time_key {{ .Values.fluentd.opensearch.timeKey.include | quote }}
       time_key {{ .Values.fluentd.opensearch.timeKey.key | quote }}
 {{- if .Values.fluentd.opensearch.timeKey.format }}
       time_format {{ .Values.fluentd.opensearch.timeKey.format | quote }}
 {{- end }}
+      # Not used. Why?
       localtime {{ .Values.fluentd.opensearch.timeKey.localtime | quote }}
 {{- if .Values.fluentd.opensearch.timeKey.timezone }}
       timezone {{ .Values.fluentd.opensearch.timeKey.timezone | quote }}
