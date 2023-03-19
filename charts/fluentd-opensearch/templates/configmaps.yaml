@@ -154,8 +154,6 @@ data:
       tag_key {{ .Values.fluentd.opensearch.tagKey.key | quote }}
 {{- end }}
 {{- if .Values.fluentd.opensearch.timeKey.include }}
-      # Not used. Why?
-      include_time_key {{ .Values.fluentd.opensearch.timeKey.include | quote }}
       time_key {{ .Values.fluentd.opensearch.timeKey.key | quote }}
 {{- if .Values.fluentd.opensearch.timeKey.format }}
       time_format {{ .Values.fluentd.opensearch.timeKey.format | quote }}

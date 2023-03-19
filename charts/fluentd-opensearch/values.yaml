@@ -346,7 +346,6 @@ fluentd:
       useLegacy: false
     timeKey:
       format: ~
-      include: 'false'
       key: time
       localtime: 'true'
       timezone: ~
